@@ -120,60 +120,75 @@ python3 scripts/applescript.py -f my-script.applescript
 
 ## The Computer-Use Loop
 
-### 💬 Chat-Guided Mode (Recommended)
+### 🎯 Interactive AI Mode (Recommended)
 
-**This is the simplest and most reliable approach.**
+**This is the correct way - forces AI to truly see screenshots!**
 
-```
-1. screenshot.py          →  capture screen
-2. Use `image` tool       →  AI analyzes screenshot in chat
-3. AI returns instruction →  specific coordinates/action
-4. mouse.py / keyboard.py →  execute the action
-5. screenshot.py          →  verify result
-6. repeat until done
+```bash
+python3 scripts/interactive_ai.py -t "在 Freeform 中画一只猫"
 ```
 
-**Example:**
+**Workflow:**
+```
+1. Script takes screenshot
+2. You analyze with `image` tool in chat (AI truly sees the image)
+3. AI returns JSON instruction with precise coordinates
+4. You paste instruction into script
+5. Script executes
+6. Verify success
+7. Repeat until done
+```
+
+**Example interaction:**
+```
+📸 截图：/tmp/macos-ai-session/step-01-123456.png
+
+⚠️  请在聊天中发送:
+image /tmp/macos-ai-session/step-01-123456.png "当前界面状态？下一步应该做什么？"
+
+AI 返回: {"action": "click", "params": {"x": 1440, "y": 100}, "reason": "点击画笔工具"}
+
+请输入指令：{"action": "click", "params": {"x": 1440, "y": 100}, "reason": "点击画笔工具"}
+
+✅ 执行：click (1440, 100)
+```
+
+**Why this works:**
+- ✅ AI **truly sees** the screenshot via `image` tool
+- ✅ Returns **precise coordinates** based on actual UI
+- ✅ **Fail Fast**: verify every step before continuing
+- ✅ No guessing coordinates!
+
+📖 **See [INTERACTIVE_GUIDE.md](INTERACTIVE_GUIDE.md) for complete guide.**
+
+---
+
+### 💬 Manual Chat Mode
+
+For simple tasks, manually coordinate in chat:
+
 ```bash
 # 1. Screenshot
 screencapture -x /tmp/screen.png
 
-# 2. In chat, send:
-image /tmp/screen.png "What should I click next?"
+# 2. In chat:
+image /tmp/screen.png "What should I click?"
 
-# 3. AI returns: "Click the button at (1440, 100)"
-
-# 4. Execute:
+# 3. AI returns coordinates, execute:
 python3 mouse.py click 1440 100
-
-# 5. Verify:
-screencapture -x /tmp/screen2.png
-image /tmp/screen2.png "Did it work?"
 ```
 
-📖 **See [CHAT_GUIDE.md](CHAT_GUIDE.md) for complete guide.**
+📖 **See [CHAT_GUIDE.md](CHAT_GUIDE.md).**
 
 ---
 
-### 🤖 AI Loop Mode (Experimental)
+### 🤖 AI Loop Mode (Deprecated)
 
 ```bash
-python3 scripts/ai_loop.py -t "在 Freeform 中画一个圆"
+python3 scripts/ai_loop.py -t "任务"
 ```
 
-Semi-automated loop that waits for instructions via JSON file.
-
-⚠️ **Note**: This mode requires manual instruction input. For most users, **Chat-Guided Mode is recommended**.
-
-**Quick instruction commands:**
-```bash
-python3 scripts/set_instruction.py click 500 300 "点击按钮"
-python3 scripts/set_instruction.py drag 100 200 400 200
-python3 scripts/set_instruction.py hotkey cmd n
-python3 scripts/set_instruction.py done "任务完成"
-```
-
-📖 **See [AI_WORKFLOW.md](AI_WORKFLOW.md) for details.**
+⚠️ **Deprecated**: Uses JSON file for instructions. Prefer `interactive_ai.py`.
 
 ## Safety
 
