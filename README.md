@@ -120,29 +120,50 @@ python3 scripts/applescript.py -f my-script.applescript
 
 ## The Computer-Use Loop
 
-### Basic Loop (Manual)
+### 💬 Chat-Guided Mode (Recommended)
+
+**This is the simplest and most reliable approach.**
 
 ```
 1. screenshot.py          →  capture screen
-2. Use `image` tool       →  AI analyzes screenshot (NOT `read`!)
-3. mouse.py / keyboard.py →  execute the action
-4. screenshot.py          →  verify result
-5. repeat until done
+2. Use `image` tool       →  AI analyzes screenshot in chat
+3. AI returns instruction →  specific coordinates/action
+4. mouse.py / keyboard.py →  execute the action
+5. screenshot.py          →  verify result
+6. repeat until done
 ```
 
-### AI Loop (Semi-Automated)
+**Example:**
+```bash
+# 1. Screenshot
+screencapture -x /tmp/screen.png
+
+# 2. In chat, send:
+image /tmp/screen.png "What should I click next?"
+
+# 3. AI returns: "Click the button at (1440, 100)"
+
+# 4. Execute:
+python3 mouse.py click 1440 100
+
+# 5. Verify:
+screencapture -x /tmp/screen2.png
+image /tmp/screen2.png "Did it work?"
+```
+
+📖 **See [CHAT_GUIDE.md](CHAT_GUIDE.md) for complete guide.**
+
+---
+
+### 🤖 AI Loop Mode (Experimental)
 
 ```bash
 python3 scripts/ai_loop.py -t "在 Freeform 中画一个圆"
 ```
 
-This script automates the loop:
-1. Takes screenshot automatically
-2. Waits for you to analyze with `image` tool in chat
-3. Reads instruction from JSON file
-4. Executes the action
-5. Verifies with another screenshot
-6. Repeats until task is done
+Semi-automated loop that waits for instructions via JSON file.
+
+⚠️ **Note**: This mode requires manual instruction input. For most users, **Chat-Guided Mode is recommended**.
 
 **Quick instruction commands:**
 ```bash
@@ -152,7 +173,7 @@ python3 scripts/set_instruction.py hotkey cmd n
 python3 scripts/set_instruction.py done "任务完成"
 ```
 
-📖 **See [AI_WORKFLOW.md](AI_WORKFLOW.md) for detailed guide.**
+📖 **See [AI_WORKFLOW.md](AI_WORKFLOW.md) for details.**
 
 ## Safety
 

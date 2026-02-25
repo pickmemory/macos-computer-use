@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
 """
-AI Loop - 真正的 AI 增强版 (v2)
+AI Loop - 半自动协作模式 (实验性)
 
-核心架构变更：
-- 不再尝试在脚本内调用 AI
-- 截图后输出路径，等待用户在聊天中使用 `image` 工具分析
-- AI 返回指令后，脚本读取指令文件并执行
-- 形成：截图 → image 工具分析 → 执行 → 验证 的循环
+⚠️ 注意：此模式需要手动写入指令文件，操作较复杂。
+✅ 推荐使用聊天指导模式：直接截图 → 在聊天中用 `image` 工具分析 → 执行指令
+
+核心架构：
+- 截图后等待用户写入指令文件
+- 读取指令并执行
+- 形成：截图 → 等待指令 → 执行 → 验证 的循环
 
 使用流程：
 1. 运行此脚本，传入任务描述
 2. 脚本截图并等待
-3. 用户在聊天中看到截图路径，使用 `image` 工具分析
-4. AI 返回指令，写入指令文件
-5. 脚本读取指令并执行
-6. 循环直到任务完成
+3. 用户手动写入指令到 JSON 文件
+4. 脚本读取指令并执行
+5. 循环直到任务完成
+
+📖 更简单的方式：见 CHAT_GUIDE.md
 """
 
 import argparse
@@ -40,9 +43,9 @@ def take_screenshot(name: str) -> str:
     ts = int(time.time())
     path = SCREENSHOT_DIR / f"{name}-{ts}.png"
     
-    # 使用系统 screencapture 命令
+    # 使用系统 screencapture 命令（完整路径）
     subprocess.run(
-        ['screencapture', '-x', str(path)],
+        ['/usr/sbin/screencapture', '-x', str(path)],
         capture_output=True,
         check=True
     )
