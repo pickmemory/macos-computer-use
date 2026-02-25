@@ -40,29 +40,50 @@ def take_screenshot(name: str) -> str:
     return str(path)
 
 
+def get_screen_info() -> str:
+    """获取屏幕分辨率信息"""
+    try:
+        result = subprocess.run(
+            ['/usr/sbin/system_profiler', 'SPDisplaysDataType'],
+            capture_output=True, text=True, timeout=5
+        )
+        for line in result.stdout.split('\n'):
+            if 'Resolution' in line:
+                # 提取分辨率，如 "Resolution: 2560 x 1600 Retina"
+                return line.strip()
+    except Exception:
+        pass
+    return "屏幕信息未知"
+
+
 def analyze_with_image(screenshot_path: str, task: str) -> dict:
     """
     提示用户在聊天中使用 image 工具分析
     
     这是核心函数 - 强制 AI 真正看到截图
     """
+    screen_info = get_screen_info()
+    
     print(f"\n{'='*70}")
     print(f"🧠 AI 分析步骤")
     print(f"{'='*70}")
     print(f"\n📋 任务：{task}")
+    print(f"\n🖥️  屏幕：{screen_info}")
+    print(f"⚠️  坐标基于实际截图像素（Retina 2x 缩放）")
     print(f"\n📸 截图：{screenshot_path}")
     print(f"\n{'='*70}")
     print(f"⚠️  请在聊天中发送以下内容（使用 image 工具，不是 read！）:")
     print(f"{'='*70}")
     print()
-    print(f'image {screenshot_path} "{task}"')
+    print(f'image {screenshot_path} "{task} 屏幕：{screen_info}。请返回基于截图实际像素的坐标（Retina 2x）。"}')
     print()
     print(f"{'='*70}")
     print(f"⏳ 等待 AI 分析并返回指令...")
     print(f"{'='*70}")
     print()
     print(f"AI 应该返回类似：")
-    print(f'{{"action": "click", "params": {{"x": 1440, "y": 100}}, "reason": "点击画笔工具"}}')
+    print(f'{{"action": "click", "params": {{"x": 2880, "y": 200}}, "reason": "点击画笔工具"}}')
+    print(f'注意：坐标是实际像素值（2560x1600 Retina = 5120x3200 实际）')
     print()
     
     # 等待用户输入指令

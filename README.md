@@ -156,6 +156,7 @@ AI 返回: {"action": "click", "params": {"x": 1440, "y": 100}, "reason": "点�
 **Why this works:**
 - ✅ AI **truly sees** the screenshot via `image` tool
 - ✅ Returns **precise coordinates** based on actual UI
+- ✅ **Screen info included**: Resolution & scaling auto-detected
 - ✅ **Fail Fast**: verify every step before continuing
 - ✅ No guessing coordinates!
 
