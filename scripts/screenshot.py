@@ -115,7 +115,8 @@ def _save_mss(img, output_path):
 
 def _screencapture(output_path, region=None):
     import subprocess
-    cmd = ["screencapture", "-x"]
+    # Use full path to avoid PATH issues
+    cmd = ["/usr/sbin/screencapture", "-x"]
     if region:
         cmd += ["-R", region]
     cmd.append(output_path)

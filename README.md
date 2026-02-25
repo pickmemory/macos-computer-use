@@ -120,15 +120,39 @@ python3 scripts/applescript.py -f my-script.applescript
 
 ## The Computer-Use Loop
 
+### Basic Loop (Manual)
+
 ```
-1. screenshot.py          →  agent sees current screen state
-2. find_ui.py             →  locate element by role + title (preferred)
-   — or —
-   analyze screenshot     →  identify pixel coordinates visually
+1. screenshot.py          →  capture screen
+2. Use `image` tool       →  AI analyzes screenshot (NOT `read`!)
 3. mouse.py / keyboard.py →  execute the action
 4. screenshot.py          →  verify result
 5. repeat until done
 ```
+
+### AI Loop (Semi-Automated)
+
+```bash
+python3 scripts/ai_loop.py -t "在 Freeform 中画一个圆"
+```
+
+This script automates the loop:
+1. Takes screenshot automatically
+2. Waits for you to analyze with `image` tool in chat
+3. Reads instruction from JSON file
+4. Executes the action
+5. Verifies with another screenshot
+6. Repeats until task is done
+
+**Quick instruction commands:**
+```bash
+python3 scripts/set_instruction.py click 500 300 "点击按钮"
+python3 scripts/set_instruction.py drag 100 200 400 200
+python3 scripts/set_instruction.py hotkey cmd n
+python3 scripts/set_instruction.py done "任务完成"
+```
+
+📖 **See [AI_WORKFLOW.md](AI_WORKFLOW.md) for detailed guide.**
 
 ## Safety
 
